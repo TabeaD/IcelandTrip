@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Well hello there :)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #0f1115;
+      --card-bg: #16181f;
+      --card-surface: #1e222b;
+      --border: #2c3240;
+      --border-frost: #445066;
+      --accent-ice: #88a4b8;
+      --accent-frost: #d0e1ec;
+      --accent-glacier: #5d8199;
+      --accent-glow: rgba(136, 164, 184, 0.25);
+      --text-main: #eceff4;
+      --text-muted: #8c97aa;
+      --text-dim: #555f72;
+      --key-bg: #222631;
+      --key-hover: #2d3342;
+      --key-active: #3a4255;
+      --key-shadow: #0b0c0f;
+      --success-ice: #7ab89e;
+      --success-glow: rgba(122, 184, 158, 0.25);
+      --error-crimson: #c26161;
+      --error-glow: rgba(194, 97, 97, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Newsreader', serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1rem 3rem;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(93, 129, 153, 0.12) 0%, transparent 65%),
+        radial-gradient(circle at 85% 100%, rgba(30, 34, 43, 0.8) 0%, transparent 50%);
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--accent-ice);
+      margin-bottom: 0.35rem;
+      opacity: 0.9;
+    }
+
+    header h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.7rem;
+      letter-spacing: 0.14em;
+      color: var(--accent-frost);
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
+    }
+
+    header p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Container Layout */
+    .container {
+      width: 100%;
+      max-width: 620px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+    }
+
+    /* Day Navigation Strip */
+    .day-strip-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .strip-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .strip-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      color: var(--accent-frost);
+      text-transform: uppercase;
+    }
+
+    .reset-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      background: none;
+      border: none;
+      text-decoration: underline;
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+
+    .reset-btn:hover {
+      color: var(--error-crimson);
+    }
+
+    .day-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.4rem;
+    }
+
+    @media (min-width: 480px) {
+      .day-selector-grid {
+        grid-template-columns: repeat(6, 1fr);
+      }
+    }
+
+    @media (min-width: 600px) {
+      .day-selector-grid {
+        grid-template-columns: repeat(12, 1fr);
+      }
+    }
+
+    .day-pill {
+      background: var(--card-surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+      padding: 0.55rem 0.15rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .day-pill:hover {
+      border-color: var(--border-frost);
+      color: var(--text-main);
+    }
+
+    .day-pill.active {
+      border-color: var(--accent-frost);
+      background: rgba(136, 164, 184, 0.15);
+      color: var(--accent-frost);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .day-pill.unlocked::after {
+      content: '●';
+      font-size: 0.45rem;
+      color: var(--success-ice);
+      position: absolute;
+      top: 3px;
+      right: 4px;
+    }
+
+    /* Clue Specimen Card */
+    .clue-specimen {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.4rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    .clue-specimen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent-glacier);
+      transition: background 0.3s;
+    }
+
+    .clue-specimen.is-unlocked::before {
+      background: var(--success-ice);
+    }
+
+    .specimen-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.65rem;
+    }
+
+    .specimen-num {
+      font-family: 'Cinzel', serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      color: var(--accent-frost);
+    }
+
+    .specimen-status {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.22rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .specimen-status.unlocked {
+      color: var(--success-ice);
+      border-color: var(--success-ice);
+      background: var(--success-glow);
+    }
+
+    .clue-body {
+      font-size: 1.3rem;
+      line-height: 1.45;
+      color: #f0f3f8;
+      font-style: italic;
+    }
+
+    /* Terminal Screen Input Display */
+    .terminal-screen {
+      background: #090a0d;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1.2rem;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.7);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .terminal-meta-line {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.25rem;
+    }
+
+    .terminal-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent-glacier);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .terminal-status-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-dim);
+    }
+
+    .input-display-row {
+      display: flex;
+      align-items: center;
+      min-height: 2rem;
+    }
+
+    .input-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.35rem;
+      color: var(--accent-frost);
+      letter-spacing: 0.1em;
+      word-break: break-all;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 1.25rem;
+      background: var(--accent-frost);
+      margin-left: 4px;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .flash-error {
+      animation: shake 0.35s ease;
+      border-color: var(--error-crimson) !important;
+      box-shadow: 0 0 12px var(--error-glow) !important;
+    }
+
+    .flash-success {
+      border-color: var(--success-ice) !important;
+      box-shadow: 0 0 15px var(--success-glow) !important;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    /* Message Reveal Card */
+    .message-reveal-card {
+      display: none;
+      background: linear-gradient(145deg, #1c212b, #151820);
+      border: 1px solid var(--accent-ice);
+      border-radius: 12px;
+      padding: 1.4rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 15px var(--accent-glow);
+      animation: slideUp 0.35s ease forwards;
+    }
+
+    .message-reveal-card.visible {
+      display: block;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.55rem;
+      margin-bottom: 0.9rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.88rem;
+      color: var(--accent-frost);
+    }
+
+    .key-badge {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent-frost);
+      background: rgba(136, 164, 184, 0.15);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      border: 1px solid var(--border-frost);
+    }
+
+    .message-card-body {
+      font-size: 1.25rem;
+      line-height: 1.55;
+      color: #f7f9fc;
+      font-style: italic;
+      white-space: pre-line;
+      margin-bottom: 0.85rem;
+    }
+
+    .message-card-footer {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      border-top: 1px dashed var(--border);
+      padding-top: 0.55rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Virtual Keyboard */
+    .keyboard-card {
+      background: #13151b;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.7rem 0.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      user-select: none;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+    }
+
+    .keyboard-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.28rem;
+      width: 100%;
+    }
+
+    .key {
+      background: var(--key-bg);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      padding: 0.65rem 0.15rem;
+      min-width: 25px;
+      flex: 1;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 0 var(--key-shadow);
+      transition: all 0.08s ease;
+    }
+
+    .key:active {
+      transform: translateY(2px);
+      box-shadow: none;
+      background: var(--key-active);
+    }
+
+    .key.wide {
+      flex: 1.5;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+    }
+
+    .key.space-key {
+      flex: 3.5;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .key.special {
+      color: var(--accent-frost);
+      background: #1a1e28;
+      border-color: #3b4559;
+    }
+
+    .key.action-enter {
+      background: var(--accent-ice);
+      color: #0b0d11;
+      font-weight: 700;
+      border-color: var(--accent-frost);
+      flex: 2.2;
+      font-size: 0.78rem;
+    }
+
+    .key.action-enter:active {
+      background: var(--accent-frost);
+    }
+
+    footer {
+      margin-top: 2rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="eyebrow">Just a bit of fun for while I'm away</div>
+    <h1>Solve the Puzzle</h1>
+    <p>And get a little tiny reward</p>
+  </header>
+
+  <div class="container">
+    <!-- Day Navigation Strip -->
+    <div class="day-strip-card">
+      <div class="strip-top">
+        <span class="strip-title">Journey Days (Pre-Day & 10–20 Nov)</span>
+        <button id="resetBtn" class="reset-btn" title="Reset terminal memory">Reset Memory</button>
+      </div>
+      <div class="day-selector-grid" id="dayGrid">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+
+    <!-- Active Day Clue Specimen -->
+    <div class="clue-specimen" id="clueCard">
+      <div class="specimen-header">
+            <span class="specimen-status" id="specimenStatus">Locked</span>
+      </div>
+      <div class="clue-body" id="clueText">Loading clue...</div>
+    </div>
+
+    <!-- Terminal Screen Input Display -->
+    <div class="terminal-screen" id="terminalScreen">
+      <div class="terminal-meta-line">
+        <span class="terminal-label" id="terminalTagLabel">Awaiting Input Key</span>
+        <span class="terminal-status-text" id="terminalHelp">Physical or On-Screen Keyboard</span>
+      </div>
+      <div class="input-display-row">
+        <span class="input-display" id="inputBuffer"></span>
+        <span class="cursor"></span>
+      </div>
+    </div>
+
+    <!-- Message Reveal Panel (Unlocked State) -->
+    <div class="message-reveal-card" id="messageCard">
+      <div class="message-card-header">
+        <span id="revealedDayTitle">Decrypted</span>
+        <span class="key-badge" id="revealedKeyBadge">KEY: MATCHED</span>
+      </div>
+      <div class="message-card-body" id="revealedMessage"></div>
+      <div class="message-card-footer">
+        <span style="color:var(--success-ice)">Decrypted & Stored</span>
+      </div>
+    </div>
+
+    <!-- Custom On-Screen Virtual Keyboard -->
+    <div class="keyboard-card" id="keyboard">
+      <!-- Row 1: Numbers & Plus -->
+      <div class="keyboard-row">
+        <button class="key" data-key="1">1</button>
+        <button class="key" data-key="2">2</button>
+        <button class="key" data-key="3">3</button>
+        <button class="key" data-key="4">4</button>
+        <button class="key" data-key="5">5</button>
+        <button class="key" data-key="6">6</button>
+        <button class="key" data-key="7">7</button>
+        <button class="key" data-key="8">8</button>
+        <button class="key" data-key="9">9</button>
+        <button class="key" data-key="0">0</button>
+        <button class="key special" data-key="+">+</button>
+      </div>
+      <!-- Row 2: QWERTY Row 1 -->
+      <div class="keyboard-row">
+        <button class="key" data-key="Q">Q</button>
+        <button class="key" data-key="W">W</button>
+        <button class="key" data-key="E">E</button>
+        <button class="key" data-key="R">R</button>
+        <button class="key" data-key="T">T</button>
+        <button class="key" data-key="Y">Y</button>
+        <button class="key" data-key="U">U</button>
+        <button class="key" data-key="I">I</button>
+        <button class="key" data-key="O">O</button>
+        <button class="key" data-key="P">P</button>
+      </div>
+      <!-- Row 3: QWERTY Row 2 -->
+      <div class="keyboard-row">
+        <button class="key" data-key="A">A</button>
+        <button class="key" data-key="S">S</button>
+        <button class="key" data-key="D">D</button>
+        <button class="key" data-key="F">F</button>
+        <button class="key" data-key="G">G</button>
+        <button class="key" data-key="H">H</button>
+        <button class="key" data-key="J">J</button>
+        <button class="key" data-key="K">K</button>
+        <button class="key" data-key="L">L</button>
+      </div>
+      <!-- Row 4: Controls + Row 3 -->
+      <div class="keyboard-row">
+        <button class="key wide" data-action="clear">CLR</button>
+        <button class="key" data-key="Z">Z</button>
+        <button class="key" data-key="X">X</button>
+        <button class="key" data-key="C">C</button>
+        <button class="key" data-key="V">V</button>
+        <button class="key" data-key="B">B</button>
+        <button class="key" data-key="N">N</button>
+        <button class="key" data-key="M">M</button>
+        <button class="key wide" data-action="backspace">⌫</button>
+      </div>
+      <!-- Row 5: Spacebar & Transmit -->
+      <div class="keyboard-row">
+        <button class="key space-key" data-key=" ">SPACE</button>
+        <button class="key action-enter" data-action="submit">TRANSMIT KEY ↵</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    I'm probably thinking of you right this second ...
+  </footer>
+
+  <script>
+    // Days Data: Pre-day + Nov 10 to Nov 20
+    const tripDays = [
+      {
+        id: "pre",
+        label: "Pre-day",
+        title: "Pre-day · Departure Eve",
+        clue: "What's the story?",
+        solutions: ["TODD"],
+        message: "I loved that you made a puzzle for me so I figured I would make you some back."
+      },
+      {
+        id: "10",
+        label: "10 Nov",
+        title: "10 November",
+        clue: "If Nesthäkchen was a tribe",
+        solutions: ["BENJAMIN"],
+        message: "Bonjour, je m'appelle Tabea!"
+      },
+      {
+        id: "11",
+        label: "11 Nov",
+        title: "11 November",
+        clue: "A gazelle by any other name",
+        solutions: ["TABEA"],
+        message: "😘"
+      },
+      {
+        id: "12",
+        label: "12 Nov",
+        title: "12 November",
+        clue: "To the point, but Tibetan",
+        solutions: ["U+0F12", "0F12", "U0F12"],
+        message: "No hiding in the bathroom today! Have a lovely day."
+      },
+      {
+        id: "13",
+        label: "13 Nov",
+        title: "13 November",
+        clue: "Where I need to visit",
+        solutions: ["SOMA"],
+        message: "Does coffee in the morning sun make you a little bit happy, too?"
+      },
+      {
+        id: "14",
+        label: "14 Nov",
+        title: "14 November",
+        clue: "48 hours in the making",
+        solutions: ["GALETTES", "GALETTE"],
+        message: "Does your hair smell of my favourite shampoo?"
+      },
+      {
+        id: "15",
+        label: "15 Nov",
+        title: "15 November",
+        clue: "A kinkster by any other name",
+        solutions: ["ICEMAN"],
+        message: "And there's no other cold hand/warm heart I'd rather want near me."
+      },
+      {
+        id: "16",
+        label: "16 Nov",
+        title: "16 November",
+        clue: "Definitely not low",
+        solutions: ["LIBIDO"],
+        message: "Might have to put this theory to the test some more ..."
+      },
+      {
+        id: "17",
+        label: "17 Nov",
+        title: "17 November",
+        clue: "The two-bottle question",
+        solutions: ["PINOT NOIR", "PINOTNOIR"],
+        message: "I love how you appreciate me for the right reasons and how you show it."
+      },
+      {
+        id: "18",
+        label: "18 Nov",
+        title: "18 November",
+        clue: "Can I pronounce it?",
+        solutions: ["GRENOUILLE"],
+        message: "Probably not but I hope I can pronounce your name by now"
+      },
+      {
+        id: "19",
+        label: "19 Nov",
+        title: "19 November",
+        clue: "Three numbers, top left",
+        solutions: ["487"],
+        message: "Do you love sudoku yet?"
+      },
+      {
+        id: "20",
+        label: "20 Nov",
+        title: "20 November",
+        clue: "Undertaker",
+        solutions: ["KILMALLOCK"],
+        message: "I'm back today, did you miss me?"
+      }
+    ];
+
+    // State
+    let currentIndex = 0;
+    let inputBufferStr = "";
+    let unlockedIds = [];
+
+    // Local Storage Loading
+    try {
+      const stored = localStorage.getItem("tabea_iceland_unlocked");
+      if (stored) {
+        unlockedIds = JSON.parse(stored);
+      }
+    } catch(e) {
+      unlockedIds = [];
+    }
+
+    // DOM Elements
+    const dayGrid = document.getElementById("dayGrid");
+    const clueCard = document.getElementById("clueCard");
+    const specimenDayLabel = document.getElementById("specimenDayLabel");
+    const specimenStatus = document.getElementById("specimenStatus");
+    const clueText = document.getElementById("clueText");
+    const terminalScreen = document.getElementById("terminalScreen");
+    const terminalTagLabel = document.getElementById("terminalTagLabel");
+    const inputBuffer = document.getElementById("inputBuffer");
+    const messageCard = document.getElementById("messageCard");
+    const revealedDayTitle = document.getElementById("revealedDayTitle");
+    const revealedKeyBadge = document.getElementById("revealedKeyBadge");
+    const revealedMessage = document.getElementById("revealedMessage");
+    const keyboard = document.getElementById("keyboard");
+    const resetBtn = document.getElementById("resetBtn");
+
+    // Render Navigation Strip
+    function renderNavigation() {
+      dayGrid.innerHTML = "";
+      tripDays.forEach((day, index) => {
+        const btn = document.createElement("button");
+        btn.className = "day-pill";
+        if (index === currentIndex) btn.classList.add("active");
+        if (unlockedIds.includes(day.id)) btn.classList.add("unlocked");
+        btn.innerHTML = `<span>${day.label}</span>`;
+        btn.addEventListener("click", () => selectDayIndex(index));
+        dayGrid.appendChild(btn);
+      });
+    }
+
+    function selectDayIndex(index) {
+      currentIndex = index;
+      inputBufferStr = "";
+      inputBuffer.textContent = "";
+      renderNavigation();
+      updateView();
+    }
+
+    function updateView() {
+      const day = tripDays[currentIndex];
+      const isUnlocked = unlockedIds.includes(day.id);
+
+      specimenDayLabel.textContent = `${day.title} · Morning Clue`;
+      clueText.textContent = `"${day.clue}"`;
+
+      if (isUnlocked) {
+        specimenStatus.textContent = "Unlocked";
+        specimenStatus.classList.add("unlocked");
+        clueCard.classList.add("is-unlocked");
+
+        revealedDayTitle.textContent = `${day.title} Decrypted`;
+        revealedKeyBadge.textContent = `KEY: [${day.solutions[0]}]`;
+        revealedMessage.textContent = day.message;
+        messageCard.classList.add("visible");
+        terminalTagLabel.textContent = "Terminal State: Unlocked";
+      } else {
+        specimenStatus.textContent = "Locked";
+        specimenStatus.classList.remove("unlocked");
+        clueCard.classList.remove("is-unlocked");
+        messageCard.classList.remove("visible");
+        terminalTagLabel.textContent = "Awaiting Input Key";
+      }
+    }
+
+    function appendChar(c) {
+      if (inputBufferStr.length < 24) {
+        inputBufferStr += c;
+        inputBuffer.textContent = inputBufferStr;
+      }
+    }
+
+    function deleteChar() {
+      inputBufferStr = inputBufferStr.slice(0, -1);
+      inputBuffer.textContent = inputBufferStr;
+    }
+
+    function clearInput() {
+      inputBufferStr = "";
+      inputBuffer.textContent = "";
+    }
+
+    function normalize(str) {
+      return str.trim().toUpperCase().replace(/\s+/g, ' ');
+    }
+
+    function submitInput() {
+      const day = tripDays[currentIndex];
+      const enteredClean = normalize(inputBufferStr);
+
+      const isMatch = day.solutions.some(sol => {
+        const solClean = normalize(sol);
+        return enteredClean === solClean || enteredClean.replace(/\s/g, '') === solClean.replace(/\s/g, '');
+      });
+
+      if (isMatch) {
+        terminalScreen.classList.remove("flash-error");
+        terminalScreen.classList.add("flash-success");
+        setTimeout(() => terminalScreen.classList.remove("flash-success"), 600);
+
+        if (!unlockedIds.includes(day.id)) {
+          unlockedIds.push(day.id);
+          try {
+            localStorage.setItem("tabea_iceland_unlocked", JSON.stringify(unlockedIds));
+          } catch(e) {}
+        }
+
+        renderNavigation();
+        updateView();
+      } else {
+        terminalScreen.classList.remove("flash-success");
+        terminalScreen.classList.add("flash-error");
+        setTimeout(() => {
+          terminalScreen.classList.remove("flash-error");
+          clearInput();
+        }, 500);
+      }
+    }
+
+    // Virtual Keyboard Click Handling
+    keyboard.addEventListener("click", (e) => {
+      const btn = e.target.closest(".key");
+      if (!btn) return;
+
+      const keyVal = btn.dataset.key;
+      const action = btn.dataset.action;
+
+      if (keyVal !== undefined) appendChar(keyVal);
+      if (action === "backspace") deleteChar();
+      if (action === "clear") clearInput();
+      if (action === "submit") submitInput();
+    });
+
+    // Physical Keyboard Handling
+    window.addEventListener("keydown", (e) => {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+      if (e.key === "Enter") {
+        e.preventDefault();
+        submitInput();
+      } else if (e.key === "Backspace") {
+        e.preventDefault();
+        deleteChar();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        clearInput();
+      } else if (e.key === " ") {
+        e.preventDefault();
+        appendChar(" ");
+      } else if (e.key.length === 1) {
+        appendChar(e.key.toUpperCase());
+      }
+    });
+
+    // Reset Memory Handler
+    resetBtn.addEventListener("click", () => {
+      unlockedIds = [];
+      try {
+        localStorage.removeItem("tabea_iceland_unlocked");
+      } catch(e) {}
+      renderNavigation();
+      updateView();
+      clearInput();
+    });
+
+    // Initial load
+    renderNavigation();
+    updateView();
+  </script>
+</body>
+</html>
