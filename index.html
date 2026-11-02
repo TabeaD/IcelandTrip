@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Well hello there :)</title>
+  <title>Hi there :)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
@@ -484,9 +484,9 @@
 <body>
 
   <header>
-    <div class="eyebrow">Just a bit of fun for while I'm away</div>
-    <h1>Solve the Puzzle</h1>
-    <p>And get a little tiny reward</p>
+    <div class="eyebrow">Good morning!</div>
+    <h1>Solve the puzzle</h1>
+    <p>And get a tiny reward</p>
   </header>
 
   <div class="container">
@@ -504,7 +504,8 @@
     <!-- Active Day Clue Specimen -->
     <div class="clue-specimen" id="clueCard">
       <div class="specimen-header">
-            <span class="specimen-status" id="specimenStatus">Locked</span>
+        <span class="specimen-num" id="specimenDayLabel"></span>
+        <span class="specimen-status" id="specimenStatus">Locked</span>
       </div>
       <div class="clue-body" id="clueText">Loading clue...</div>
     </div>
@@ -529,6 +530,7 @@
       </div>
       <div class="message-card-body" id="revealedMessage"></div>
       <div class="message-card-footer">
+        <span id="revealedSub">Yay! You did it!</span>
         <span style="color:var(--success-ice)">Decrypted & Stored</span>
       </div>
     </div>
@@ -595,7 +597,7 @@
   </div>
 
   <footer>
-    I'm probably thinking of you right this second ...
+    I'm probably thinking of you right now ...
   </footer>
 
   <script>
